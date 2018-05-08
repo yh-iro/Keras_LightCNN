@@ -28,22 +28,41 @@ from keras.optimizers import SGD
 from light_cnn import LightCNN
 import celeb_gen
 
-datagen = celeb_gen.Datagen('BUILT/DATASET/DIR')
+datagen = celeb_gen.Datagen('BUILT/DATASET/DIR/')
 lcnn = LightCNN(classes=datagen.get_classes())
 train_gen = datagen.get_generator('train', batch_size=64)
 
 lcnn.train(train_gen=train_gen, valid_gen=train_gen,
            optimizer=SGD(lr=0.001, momentum=0.9, decay=0.00004, nesterov=True),
            classifier_dropout=0.7, steps_per_epoch=1000, validation_steps=100,
-           epochs=500, out_prefix="models/celeb/", out_period=5)
+           epochs=500, out_prefix="SOME/PREFIX_", out_period=5)
 
 lcnn.train(train_gen=train_gen, valid_gen=train_gen,
            optimizer=SGD(lr=0.0001, momentum=0.9, decay=0.00004, nesterov=True),
            classifier_dropout=0.5, steps_per_epoch=1000, validation_steps=100,
-           epochs=500, out_prefix="models/celeb/", out_period=5)
+           epochs=500, out_prefix="SOME/PREFIX_", out_period=5)
 ```
 
-I trained twice as above. Totally, ran 64 batch_size X 1000 steps X (500 + 500) epochs. It takes about 5 days with GeForce GTX 1080 Ti and recorded 98.94% accuracy on split valid set of the MS-Celeb-1M. (described as in author's paper) Not yet evaluated enough on other dataset.
+I trained twice as above. Totally, ran 64 batch_size x 1000 steps x (500 + 500) epochs. It takes about 5 days with GeForce GTX 1080 Ti. I used train dataset not only training but also  validation to check the score without dropout and it recorded 98.9% accuracy on validation.
+
+## Evaluation
+
+```python
+from light_cnn import LightCNN
+import celeb_gen
+
+datagen = celeb_gen.Datagen('BUILT/DATASET/DIR/')
+lcnn = LightCNN(classes=datagen.get_classes(),
+                extractor_weights='TRAINED/EXTRACTOR/WEIGHTS.hdf5',
+                classifier_weights='TRAINED/CLASSIFIER/WEIGHTS.hdf5')
+
+test_gen = datagen.get_generator('test', batch_size=64)
+score = lcnn.evaluate(test_gen, steps=100)
+print(score)
+```
+I did easy evaluation as above. I evaluated only with pre-split valid set from the MS-Celeb-1M (described as in author's paper) and it recorded 95.5% accuracy.
+Not yet evaluated enough on other dataset.
+
 
 ## Classify
 ```python
