@@ -10,8 +10,10 @@ Original paper is
 *Wu, X., He, R., Sun, Z., & Tan, T. (2015). A light CNN for deep face representation with noisy labels. arXiv preprint arXiv:1511.02683.*
 
 ## Library version
+- Python: 3.6.3
 - Tensorflow: 1.5.0
 - Keras: 2.1.3
+- Developed on Anaconda 5.0.1, Windows10 64bit
 
 ## Building dataset
 I followed yxu0611's instructions of preparing dataset for some reason. https://github.com/yxu0611/Tensorflow-implementation-of-LCNN
